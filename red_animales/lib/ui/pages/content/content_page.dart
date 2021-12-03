@@ -38,7 +38,7 @@ class ContentPage extends StatelessWidget {
     return Scaffold(
       appBar: CustomAppBar(
         picUrl: 'https://uifaces.co/our-content/donated/gPZwCbdS.jpg',
-        tile: const Text("Red social"),
+        tile: const Text("Red Egresados"),
         context: context,
         onSignOff: () {
           authController.authenticated = false;

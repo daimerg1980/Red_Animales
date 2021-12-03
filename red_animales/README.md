@@ -1,4 +1,4 @@
-# red_animales
+# red_egresados
 
 A new Flutter project.
 

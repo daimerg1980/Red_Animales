@@ -1,8 +1,10 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:red_animales/domain/use_cases/auth_management.dart';
-import 'package:red_animales/domain/use_cases/controllers/authentication.dart';
-
+import 'package:red_egresados/domain/use_cases/auth_management.dart';
+import 'package:red_egresados/domain/use_cases/controllers/authentication.dart';
+import 'package:red_egresados/domain/use_cases/controllers/connectivity.dart';
 
 class LoginScreen extends StatefulWidget {
   final VoidCallback onViewSwitch;
@@ -17,12 +19,13 @@ class _State extends State<LoginScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final controller = Get.find<AuthController>();
+  final connectivityController = Get.find<ConnectivityController>();
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Column( 
+      child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Padding(
@@ -56,7 +59,7 @@ class _State extends State<LoginScreen> {
               ),
             ),
           ),
-          Row( 
+          Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Expanded(
@@ -65,10 +68,23 @@ class _State extends State<LoginScreen> {
                   child: ElevatedButton(
                     child: const Text("Login"),
                     onPressed: () async {
-                      var result = await AuthManagement.signIn(
-                          email: emailController.text,
-                          password: passwordController.text);
-                      controller.authenticated = result;
+                      // ACTIVIDAD
+                      // LUEGO DE VALIDAR EL ESTADO DE RED:
+                      if (connectivityController.connected) {
+                        // PERMITA LA AUTENTICACIÓN A LA APP SI SE DETECTA CONEXIÓN
+                        var result = await AuthManagement.signIn(
+                            email: emailController.text,
+                            password: passwordController.text);
+                        controller.authenticated = result;
+                      } else {
+                        // MUESTRE UN SNACKBAR (notificación) INDICANDO QUE NO EXISTE CONEXIÓN
+                        Get.showSnackbar(
+                          GetBar(
+                            message: "No estas conectado a la red.",
+                            duration: const Duration(seconds: 2),
+                          ),
+                        );
+                      }
                     },
                   ),
                 ),

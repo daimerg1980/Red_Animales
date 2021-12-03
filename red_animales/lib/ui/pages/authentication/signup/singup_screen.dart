@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:red_animales/domain/use_cases/auth_management.dart';
-import 'package:red_animales/domain/use_cases/controllers/authentication.dart';
+import 'package:red_egresados/domain/use_cases/auth_management.dart';
+import 'package:red_egresados/domain/use_cases/controllers/authentication.dart';
+import 'package:red_egresados/domain/use_cases/controllers/connectivity.dart';
 
 class SignUpScreen extends StatefulWidget {
   final VoidCallback onViewSwitch;
@@ -17,6 +18,7 @@ class _State extends State<SignUpScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final controller = Get.find<AuthController>();
+  final connectivityController = Get.find<ConnectivityController>();
 
   @override
   Widget build(BuildContext context) {
@@ -75,11 +77,20 @@ class _State extends State<SignUpScreen> {
                   padding: const EdgeInsets.all(14.0),
                   child: ElevatedButton(
                     onPressed: () async {
-                      var result = await AuthManagement.signUp(
-                          name: nameController.text,
-                          email: emailController.text,
-                          password: passwordController.text);
-                      controller.authenticated = result;
+                      if (connectivityController.connected) {
+                        var result = await AuthManagement.signUp(
+                            name: nameController.text,
+                            email: emailController.text,
+                            password: passwordController.text);
+                        controller.authenticated = result;
+                      } else {
+                        Get.showSnackbar(
+                          GetBar(
+                            message: "No estas conectado a la red.",
+                            duration: const Duration(seconds: 2),
+                          ),
+                        );
+                      }
                     },
                     child: const Text("Registrar"),
                   ),

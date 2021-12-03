@@ -8,6 +8,8 @@ class PublicJob {
       required this.category,
       required this.experience});
 
+  //ACTIVIDAD
+  //IMPLEMENTE LA CONVERSIÓN DE JSON A OBJETO
   factory PublicJob.fromJson(Map<String, dynamic> map) {
     return PublicJob(
         title: map['title'],

@@ -1,4 +1,4 @@
-import 'package:red_animales/data/repositories/auth.dart';
+import 'package:red_egresados/data/repositories/auth.dart';
 
 class AuthManagement {
   static final Auth _auth = Auth();

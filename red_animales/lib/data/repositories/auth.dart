@@ -1,5 +1,4 @@
-import 'package:red_animales/domain/repositorires/auth.dart';
-
+import 'package:red_egresados/domain/repositorires/auth.dart';
 
 class Auth implements AuthInterface {
   @override
