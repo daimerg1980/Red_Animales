@@ -1,10 +1,9 @@
-
-import 'package:f_202110_firebase/domain/controller/authentication_controller.dart';
+import 'package:red_egresados/domain/controller/authentication_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'firebase_signup.dart';
 
-class FirebaseLogIn extends StatefulWidget {
+class LoginScreen extends StatefulWidget {
   @override
   _FirebaseLogInState createState() => _FirebaseLogInState();
 }
@@ -15,7 +14,6 @@ class _FirebaseLogInState extends State<FirebaseLogIn> {
   final controllerPassword = TextEditingController();
 
   //Obten el controlador de autenticacion inyectado
-
 
   _login(theEmail, thePassword) async {
     print('_login $theEmail $thePassword');
@@ -108,5 +106,4 @@ class _FirebaseLogInState extends State<FirebaseLogIn> {
   }
 }
 
-class HEAD {
-}
+class HEAD {}
