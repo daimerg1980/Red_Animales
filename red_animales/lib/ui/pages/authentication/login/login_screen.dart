@@ -1,109 +1,109 @@
 
+import 'package:f_202110_firebase/domain/controller/authentication_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:red_egresados/domain/use_cases/auth_management.dart';
-import 'package:red_egresados/domain/use_cases/controllers/authentication.dart';
-import 'package:red_egresados/domain/use_cases/controllers/connectivity.dart';
+import 'firebase_signup.dart';
 
-class LoginScreen extends StatefulWidget {
-  final VoidCallback onViewSwitch;
-
-  const LoginScreen({Key? key, required this.onViewSwitch}) : super(key: key);
-
+class FirebaseLogIn extends StatefulWidget {
   @override
-  _State createState() => _State();
+  _FirebaseLogInState createState() => _FirebaseLogInState();
 }
 
-class _State extends State<LoginScreen> {
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
-  final controller = Get.find<AuthController>();
-  final connectivityController = Get.find<ConnectivityController>();
+class _FirebaseLogInState extends State<FirebaseLogIn> {
+  final _formKey = GlobalKey<FormState>();
+  final controllerEmail = TextEditingController();
+  final controllerPassword = TextEditingController();
 
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text(
-              "Iniciar sesión",
-              style: Theme.of(context).textTheme.headline1,
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              key: const Key("signInEmail"),
-              controller: emailController,
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Correo electrónico',
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: TextField(
-              key: const Key("signInPassword"),
-              controller: passwordController,
-              obscureText: true,
-              obscuringCharacter: "*",
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                labelText: 'Clave',
-              ),
-            ),
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(14.0),
-                  child: ElevatedButton(
-                    child: const Text("Login"),
-                    onPressed: () async {
-                      // ACTIVIDAD
-                      // LUEGO DE VALIDAR EL ESTADO DE RED:
-                      if (connectivityController.connected) {
-                        // PERMITA LA AUTENTICACIÓN A LA APP SI SE DETECTA CONEXIÓN
-                        var result = await AuthManagement.signIn(
-                            email: emailController.text,
-                            password: passwordController.text);
-                        controller.authenticated = result;
-                      } else {
-                        // MUESTRE UN SNACKBAR (notificación) INDICANDO QUE NO EXISTE CONEXIÓN
-                        Get.showSnackbar(
-                          GetBar(
-                            message: "No estas conectado a la red.",
-                            duration: const Duration(seconds: 2),
-                          ),
-                        );
-                      }
-                    },
-                  ),
-                ),
-              )
-            ],
-          ),
-          TextButton(
-            key: const Key("toSignUpButton"),
-            child: const Text("Registrarse"),
-            onPressed: widget.onViewSwitch,
-          ),
-        ],
-      ),
-    );
+  //Obten el controlador de autenticacion inyectado
+
+
+  _login(theEmail, thePassword) async {
+    print('_login $theEmail $thePassword');
+    try {
+      await authenticationController.login(theEmail, thePassword);
+    } catch (err) {
+      Get.snackbar(
+        "Login",
+        err.toString(),
+        icon: Icon(Icons.person, color: Colors.red),
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
   }
 
   @override
-  void dispose() {
-    emailController.dispose();
-    passwordController.dispose();
-    super.dispose();
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(20),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Form(
+            key: _formKey,
+            child:
+                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Text(
+                "Login with email",
+                style: TextStyle(fontSize: 20),
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              TextFormField(
+                keyboardType: TextInputType.emailAddress,
+                controller: this.controllerEmail,
+                decoration: InputDecoration(labelText: "Email address"),
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return "Enter email";
+                  } else if (!value.contains('@')) {
+                    return "Enter valid email address";
+                  }
+                },
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              TextFormField(
+                controller: this.controllerPassword,
+                decoration: InputDecoration(labelText: "Password"),
+                keyboardType: TextInputType.number,
+                obscureText: true,
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return "Enter password";
+                  } else if (value.length < 6) {
+                    return "Password should have at least 6 characters";
+                  }
+                  return null;
+                },
+              ),
+              SizedBox(
+                height: 20,
+              ),
+              OutlinedButton(
+                  onPressed: () async {
+                    // this line dismiss the keyboard by taking away the focus of the TextFormField and giving it to an unused
+                    FocusScope.of(context).requestFocus(FocusNode());
+                    final form = _formKey.currentState;
+                    form!.save();
+                    if (_formKey.currentState!.validate()) {
+                      await _login(
+                          controllerEmail.text, controllerPassword.text);
+                    }
+                  },
+                  child: Text("Submit")),
+            ]),
+          ),
+          TextButton(
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => FirebaseSignUp()));
+              },
+              child: Text("Create account"))
+        ],
+      ),
+    );
   }
 }
