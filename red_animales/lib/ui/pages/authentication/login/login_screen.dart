@@ -1,4 +1,9 @@
+<<<<<<< HEAD
 import 'package:red_egresados/domain/controller/authentication_controller.dart';
+=======
+import 'dart:developer';
+
+>>>>>>> parent of af77c5f (las librerias)
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'firebase_signup.dart';
