@@ -23,6 +23,7 @@ class _State extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Padding(
+      
       padding: const EdgeInsets.all(8.0),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -66,11 +67,8 @@ class _State extends State<LoginScreen> {
                   padding: const EdgeInsets.all(14.0),
                   child: ElevatedButton(
                     child: const Text("Login"),
-                    onPressed: () async {
-                      // ACTIVIDAD
-                      // LUEGO DE VALIDAR EL ESTADO DE RED:
+                    onPressed: () async {                     
                       if (connectivityController.connected) {
-                        // PERMITA LA AUTENTICACIÓN A LA APP SI SE DETECTA CONEXIÓN
                         var result = await AuthManagement.signIn(
                             email: emailController.text,
                             password: passwordController.text);
